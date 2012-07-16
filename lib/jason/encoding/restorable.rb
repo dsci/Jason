@@ -16,11 +16,8 @@ module Jason
           r_objects = ActiveSupport::JSON.decode(persisted_file_content)
           obj = r_objects.detect{|obj| obj[key]["id"] == @id}
           raise Jason::Errors::DocumentNotFoundError, "Document not found with #{@id}." if obj.nil?
-          
-          instance = @klass.new(HashWithIndifferentAccess.new(obj[key]))
-          instance.instance_eval {@new_record = false }
-          
-          return instance
+        
+          return restore_with_cast(obj[key])
         end
 
         def all(*args)
@@ -31,9 +28,7 @@ module Jason
           persisted_file_content = load_from_file(where_to_persist(@klass.name))
           r_objects = ActiveSupport::JSON.decode(persisted_file_content)
           r_objects.map do |obj|
-            instance = @klass.new(HashWithIndifferentAccess.new(obj[key]))
-            instance.instance_eval {@new_record = false }
-            instance
+            restore_with_cast(obj[key])
           end
         end
 
@@ -50,15 +45,35 @@ module Jason
           
           r_objects.each do |obj|
             if obj[key][options.keys.join.to_s] == options.values.join
-              instance = @klass.new(HashWithIndifferentAccess.new(obj[key]))
-              instance.instance_eval {@new_record = false }
-              found_objects << instance
+              found_objects << restore_with_cast(obj[key])
             end
           end
           found_objects
         end
 
+        private 
 
+        def restore_with_cast(attributes)
+          instance = @klass.new(HashWithIndifferentAccess.new(attributes))
+          
+          instance.instance_eval do
+            @new_record = false 
+            # parse in given datatypes
+            @attributes.each_pair do |key,value|
+              begin
+                attribute_definition = self.class.defined_attributes.detect do |item| 
+                  item[:name] == key.to_sym
+                end[:type]
+
+                cast_to = Jason::DATA_TYPES["#{attribute_definition.to_sym}"]
+                instance_variable_set("@#{key}",value.send(cast_to))
+              rescue 
+                next
+              end
+            end
+          end
+          return instance
+        end
       end
       
     end

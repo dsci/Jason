@@ -16,7 +16,7 @@ module Jason
       define_method(:respond_to_missing?) do |meth_name, include_private|
         if meth_name.to_s.match(/find_by_/)
           conditions = meth_name.to_s.split("find_by_").last
-          return defined_attributes.include?(conditions.to_sym)
+          return defined_attributes_include?(conditions.to_sym)
         else
           super(meth_name,include_private)
         end
@@ -25,7 +25,7 @@ module Jason
       def method_missing(meth_name,*args,&block)
         if meth_name.to_s.match(/find_by_/)
           conditions = meth_name.to_s.split("find_by_").last
-          if defined_attributes.include?(conditions.to_sym)
+          if defined_attributes_include?(conditions.to_sym)
             options = {:klass => self}
             options[conditions.to_sym] = args.pop
             return Encoding::PersistenceHandler::restore(:with_conditions, options)
@@ -35,6 +35,14 @@ module Jason
         else
           super
         end
+      end
+
+      def defined_attributes_include?(symbol)
+        defined_attributes.map{|item| item[:name]}.include?(symbol)
+      end
+
+      def data_type_for_attribute(attribute)
+        defined_attributes.detect{|item| item[:name] == attribute}[:attribute_type]
       end
 
       def defined_attributes
@@ -91,9 +99,9 @@ module Jason
           instance_variable_set("@#{attribute_name}", attribute.send(cast_to))
         end
 
-        defined_attributes << attribute_name unless defined_attributes.include?(attribute_name)
+        defined_attributes << {:name => attribute_name, :type => attribute_type} unless defined_attributes.include?(attribute_name)
 
-        unless defined_attributes.include?(:id)
+        unless defined_attributes_include?(:id)
           define_method :id do 
             instance_variable_get("@id")
           end
@@ -101,7 +109,7 @@ module Jason
           define_method "id=" do |val|
             instance_variable_set("@id", val)
           end
-          defined_attributes << :id
+          defined_attributes << {:name => :id, :type => attribute_type}
         end
       end
 
@@ -156,7 +164,7 @@ module Jason
 
       def reload_attributes
         self.class.defined_attributes.each do |attribute|
-          called_attribute = self.send(attribute)
+          called_attribute = self.send(attribute[:name])
           @attributes[attribute] = called_attribute if called_attribute
         end
       end

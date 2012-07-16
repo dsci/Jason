@@ -4,9 +4,10 @@ class Person
 
   include Jason::Persistence
 
-  attribute :firstname, String
-  attribute :lastname,  String
+  attribute :firstname,     String
+  attribute :lastname,      String
   attribute :date_of_birth, String
+  attribute :age,           Integer
 
 end
 
@@ -38,7 +39,7 @@ describe "Jason::Persistence" do
       context "when document found" do
 
         let(:person) do
-          Person.new(:lastname => "Hauptmann", :firstname => "Rene")
+          Person.new(:lastname => "Hauptmann", :firstname => "Rene", :age => 12)
         end
 
         before do
@@ -52,6 +53,7 @@ describe "Jason::Persistence" do
           expected_person.firstname.should eq person.firstname
           expected_person.date_of_birth.should eq person.date_of_birth
           expected_person.new_record?.should be false
+          expected_person.age.should be_instance_of Fixnum
         end
 
       end

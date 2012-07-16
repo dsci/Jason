@@ -58,4 +58,6 @@ module Jason
     key.name.downcase.singularize if key.respond_to?(:name)
   end
 
+  
+
 end
