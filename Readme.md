@@ -4,12 +4,32 @@
 
 It's only for demonstration purposes. If you want to used in your application - feel free. 
 
+It uses *.json files for persistence. One for each model (imagine as *row*).
+
 ### Features
 
 By now, Jason supports:
 
 * a persistence_layer
 * a simple relation (association) mapper
+
+It's customizable:
+
+```ruby
+
+Jason.setup do |config|
+
+  config.persistence_path = "/Users/bob/jsons"
+
+  config.restore_app      = MyOwn::RestoreApp
+
+end
+
+```
+
+<code>config.restore_app</code> allows to use an own Class which handles restoring from *.json* files.
+If this is set, it replaces the integrated <code>Encoding::PersistenceHandler::Restorable</code> class. 
+
 
 **The persistence layer**
 
