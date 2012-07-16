@@ -22,7 +22,7 @@ describe "Jason::Persistence" do
   end
 
   after(:all) do
-    #FileUtils.rm_rf(File.join(fixtures_path, 'people.json'))
+    FileUtils.rm_rf(File.join(fixtures_path, 'people.json'))
   end
 
   context "class methods" do
@@ -81,6 +81,28 @@ describe "Jason::Persistence" do
 
     context "magic finders" do
 
+      before(:all) do
+        FileUtils.rm_rf(File.join(fixtures_path, 'people.json'))
+        ["Max", "Werner", "Claudia", "Werner"].each do |name|
+          person = Person.new(:firstname => name,:lastname => "Winter")
+          person.save
+        end
+      end
+
+      it{should respond_to(:find_by_firstname)}
+      it{should respond_to(:find_by_lastname)}
+      it{should respond_to(:find_by_date_of_birth)}
+
+      it "find by firstname" do
+        result = Person.find_by_firstname("Werner")
+        result.should be_instance_of Array
+        result.should have(2).items
+      end
+
+      it "find by lastname" do
+        result = Person.find_by_lastname("Winter")
+        result.should have(4).items
+      end
     end
 
   end

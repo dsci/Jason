@@ -54,4 +54,8 @@ module Jason
   mattr_accessor :restore_app
   @@restore_app = Encoding::PersistenceHandler::Restorable
 
+  def singularize_key(key)
+    key.name.downcase.singularize if key.respond_to?(:name)
+  end
+
 end

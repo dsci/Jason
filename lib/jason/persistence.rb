@@ -13,6 +13,30 @@ module Jason
 
       attr_accessor :new_record
 
+      define_method(:respond_to_missing?) do |meth_name, include_private|
+        if meth_name.to_s.match(/find_by_/)
+          conditions = meth_name.to_s.split("find_by_").last
+          return defined_attributes.include?(conditions.to_sym)
+        else
+          super(meth_name,include_private)
+        end
+      end
+
+      def method_missing(meth_name,*args,&block)
+        if meth_name.to_s.match(/find_by_/)
+          conditions = meth_name.to_s.split("find_by_").last
+          if defined_attributes.include?(conditions.to_sym)
+            options = {:klass => self}
+            options[conditions.to_sym] = args.pop
+            return Encoding::PersistenceHandler::restore(:with_conditions, options)
+          else
+            super
+          end
+        else
+          super
+        end
+      end
+
       def defined_attributes
         @defined_attributes ||= []
       end
@@ -120,7 +144,7 @@ module Jason
 
       def as_json
         jsonable = {}
-        jsonable[self.class.name.downcase.singularize] = self.to_hsh
+        jsonable[Jason::singularize_key(self.class)] = self.to_hsh
         return jsonable
       end
 
