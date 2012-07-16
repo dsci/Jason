@@ -28,6 +28,10 @@ module Jason
     autoload :PersistenceHandler, 'jason/encoding/persistence_handler'
   end
 
+  module Reflection
+    autoload :Base,  'jason/reflection/base'
+  end
+
   autoload :Errors,         'jason/errors'
 
   autoload :CoreExtension,  'jason/core/ext'

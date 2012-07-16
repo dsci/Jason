@@ -23,10 +23,31 @@ module Jason
             # (Only if update is true)
             # If not updated, append to objects array.
             unless @update
-              r_objects << @persistable_obj.send(:as_json)
+              # persist with relations if given.
+              # persist belongs_to
+              as_json = @persistable_obj.send(:as_json)
+              as_json[@root].each_pair do |key,value|
+                next unless key.to_s.include?("_id")
+                belongs_to_relation = key.to_s.split("_id").first.to_sym
+                reflection = @persistable_obj.class.reflect_on_relation(belongs_to_relation)
+                if reflection
+                  # is relation already persisted?
+                  relation_class = Module.const_get(reflection.class_name.to_sym)
+                  already_persisted = relation_class.find(value) rescue false
+                  unless already_persisted
+                    relation_obj = @persistable_obj.send(belongs_to_relation)
+                    relation_obj.save
+                  else
+                    next
+                  end
+                end
+              end
+              
+              r_objects << as_json
             else 
               r_objects.each do |object|
                 if object[@root]["id"] == @persistable_obj.send(:id)
+                  # persist with relations if given.
                   object[@root] = @persistable_obj.send(:as_json)[@root]
                   break
                 end

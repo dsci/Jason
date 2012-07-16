@@ -149,6 +149,7 @@ module Jason
         #p self.attributes
         self.attributes
       end
+      alias_method :to_hash, :to_hsh
 
       def as_json
         jsonable = {}
@@ -160,14 +161,14 @@ module Jason
         @new_record
       end
 
-      private 
-
       def reload_attributes
         self.class.defined_attributes.each do |attribute|
           called_attribute = self.send(attribute[:name])
-          @attributes[attribute] = called_attribute if called_attribute
+          @attributes[attribute[:name]] = called_attribute if called_attribute
         end
       end
+
+      private 
 
       def process_attributes(attrs={}, options = {})
         reload = options.fetch(:reload, false)

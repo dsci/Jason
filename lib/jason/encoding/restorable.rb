@@ -15,9 +15,11 @@ module Jason
           persisted_file_content = load_from_file(where_to_persist(@klass.name))
           r_objects = ActiveSupport::JSON.decode(persisted_file_content)
           obj = r_objects.detect{|obj| obj[key]["id"] == @id}
-          raise Jason::Errors::DocumentNotFoundError, "Document not found with #{@id}." if obj.nil?
-        
+          raise Jason::Errors::DocumentNotFoundError, "Document not found with id #{@id}." if obj.nil?
+          
           return restore_with_cast(obj[key])
+        rescue MultiJson::DecodeError => de
+          raise Jason::Errors::DocumentNotFoundError, "Document not found with id #{@id}."
         end
 
         def all(*args)

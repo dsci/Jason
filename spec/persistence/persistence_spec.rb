@@ -14,11 +14,6 @@ end
 describe "Jason::Persistence" do
 
   before(:all) do
-    Jason.setup do |config|
-
-      config.persistence_path = fixtures_path
-
-    end
     FileUtils.rm_rf(File.join(fixtures_path, 'people.json'))
   end
 
