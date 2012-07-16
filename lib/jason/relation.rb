@@ -25,7 +25,7 @@ module Jason
         relation_name = args.shift.to_s
         options = args.empty? ? {} : args.shift
       
-        class_name = options.fetch(:class_name, relation_name.downcase.singularize).capitalize
+        class_name = options.fetch(:class, relation_name.downcase.singularize).capitalize
 
         reflections << Reflection::Base.new(:name => relation_name, 
                                             :class_name => class_name,
@@ -51,7 +51,7 @@ module Jason
         relation_name = args.shift.to_s
         options       = args.empty? ? {} : args.shift
 
-        class_name    = options.fetch(:class_name, relation_name).capitalize
+        class_name    = options.fetch(:class, relation_name).capitalize
 
         reflections   << Reflection::Base.new(:name => relation_name,
                                               :class_name => class_name,
