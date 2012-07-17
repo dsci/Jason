@@ -31,18 +31,11 @@ module Jason
               if @persistable_obj.class.ancestors.map(&:to_s).include?("Jason::Relation")
                 as_json[@root].each_pair do |key,value|
                   next unless key.to_s.include?("_id")
-                  belongs_to_relation = key.to_s.split("_id").first.to_sym
-                  reflection = @persistable_obj.class.reflect_on_relation(belongs_to_relation)
+                  relation = key.to_s.split("_id").first.to_sym
+                  reflection = @persistable_obj.class.reflect_on_relation(relation)
                   if reflection
-                    # is relation already persisted?
-                    relation_class = Module.const_get(reflection.class_name.to_sym)
-                    already_persisted = relation_class.find(value) rescue false
-                    unless already_persisted
-                      relation_obj = @persistable_obj.send(belongs_to_relation)
-                      relation_obj.save
-                    else
-                      next
-                    end
+                    process_method = instance_method("process_#{reflection.type}")
+                    process_method.bind(self).call(reflection,value)
                   end
                 end
               end
@@ -62,6 +55,41 @@ module Jason
         end
 
         private 
+
+        def process_belongs_to(reflection,value)
+          persist = instance_method(:run_relation_persistence)
+          action = lambda do |relation_name,relation_class,value|
+            begin
+              already_persisted = relation_class.find(value)
+            rescue Jason::Errors::DocumentNotFoundError
+              relation_obj = @persistable_obj.send(relation_name)
+              relation_obj.save
+            end
+          end
+          persist.bind(self).call(reflection,value,action)
+        end
+
+        def process_has_many(reflection,value)
+          persist = instance_method(:run_relation_persistence)
+          action = lambda do |relation_name,relation_class,value|
+            ids = value.split(Jason::has_many_separator)
+            ids.each do |id|
+              begin
+                relation_class.find(id)
+              rescue Jason::Errors::DocumentNotFoundError
+                relation_obj = @persistable_obj.send(relation_name).detect{|obj| obj.id == id}
+                relation_obj.save unless relation_obj.nil?
+              end
+            end
+          end
+          persist.bind(self).call(reflection,value,action)
+        end
+
+        def run_relation_persistence(reflection,value,block)
+          relation_name   = reflection.name
+          relation_class  = Module.const_get(reflection.class_name.to_sym)
+          block.call(relation_name,relation_class,value)
+        end
 
         def r_objects
           @r_objects ||= []

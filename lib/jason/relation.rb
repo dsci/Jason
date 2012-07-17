@@ -30,20 +30,50 @@ module Jason
         reflections << Reflection::Base.new(:name => relation_name, 
                                             :class_name => class_name,
                                             :type => "has_many")
+
+        ivar_name = "#{relation_name}_ids".to_sym
+
+        attribute ivar_name, String
+
         method_definition_getter = <<-RUBY
 
           def #{relation_name}
-            objects = []
             # find all children in *.json if included.
             # Otherwise return empty array.
-            
-            return objects
+            relation_objects = self.instance_variable_get("@#{relation_name}")
+            finder = ->() do
+              objects = []
+              object_ids = self.send("#{ivar_name}")
+              unless object_ids.nil? or object_ids.empty?
+                object_ids.split(Jason::has_many_separator).each do |object_id|
+                  begin
+                    klass = Module.const_get("#{class_name}".to_sym)
+                    objects << klass.find(object_id)
+                  rescue 
+                    next
+                  end
+                end
+              end
+              self.instance_variable_set("@#{relation_name}", objects)
+              return objects
+            end
+            relation_objects ||= finder.call
+          end
+
+        RUBY
+
+        method_definition_setter = <<-RUBY
+
+          def #{relation_name}=(objects)
+            self.send("#{ivar_name}=", objects.map(&:id).join(Jason::has_many_separator))  
+            self.instance_variable_set("@#{relation_name}",objects)
+            self.reload_attributes
           end
 
         RUBY
 
         class_eval method_definition_getter
-
+        class_eval method_definition_setter
 
       end
 

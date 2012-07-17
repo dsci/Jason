@@ -59,6 +59,9 @@ module Jason
   mattr_accessor :restore_app
   @@restore_app = Encoding::PersistenceHandler::Restorable
 
+  mattr_accessor :has_many_separator
+  @@has_many_separator = ","
+
   def singularize_key(key)
     key.name.downcase.singularize if key.respond_to?(:name)
   end

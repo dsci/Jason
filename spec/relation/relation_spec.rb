@@ -27,6 +27,8 @@ describe "Jason::Relation" do
 
   context "persisting relations" do
 
+    let(:person){Person.new(:firstname => "Bob",:age => 23)}
+
     context "belongs_to" do
       
       before do
@@ -37,8 +39,7 @@ describe "Jason::Relation" do
 
         end
       end
-
-      let(:person){Person.new(:firstname => "Bob",:age => 23)}
+      
       let(:wife){Wife.new(:name => "Hanne")}
 
       it "automatically persist" do
@@ -55,6 +56,44 @@ describe "Jason::Relation" do
         pperson = Person.find(person.id)
 
         pperson.wife.id.should eq expected_wife.id  
+      end
+
+    end
+
+    context "has_many" do
+
+      before(:all) do
+        Child = Class.new do
+          include Jason::Persistence
+
+          attribute :name, String
+        end
+      end
+
+      let(:children) do
+        c = []
+        ["Claudia", "Peter", "Max"].each do |name|
+          c << Child.new(:name => name)
+        end
+        c
+      end
+
+      it "respond to children" do
+        person.should respond_to(:children)
+      end
+
+      it "respond to children=" do
+        person.should respond_to(:children=)
+      end
+
+      it "automatically persists" do
+        person.children = children
+        person.save
+
+        aperson = Person.find(person.id)
+        aperson.children.each do |child|
+          children.map(&:id).should include child.id
+        end
       end
 
     end

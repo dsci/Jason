@@ -119,7 +119,7 @@ so different class (names) are assignable to the relation name.
 | Feature                         | Status            |
 |:--------------------------------|:------------------|
 | Date                            | DONE              |
-| has_many                        | work in progress  |
+| has_many                        | DONE              |
 | Custom data types               | TODO              |
 | deletable only if already saved | DONE              |
 | code documentation              | Partly & TODO     |
