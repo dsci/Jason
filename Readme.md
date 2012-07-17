@@ -39,7 +39,7 @@ By now, it supports the following datatypes:
 
 * Integer
 * String
-* Date (not fully supported)
+* Date
 
 ```ruby
 class Person
@@ -118,7 +118,7 @@ so different class (names) are assignable to the relation name.
 
 | Feature                         | Status            |
 |:--------------------------------|:------------------|
-| Date                            | TODO              |
+| Date                            | DONE              |
 | has_many                        | work in progress  |
 | Custom data types               | TODO              |
 | deletable only if already saved | TODO              |

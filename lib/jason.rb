@@ -14,6 +14,8 @@ require 'active_support/json'
 
 module Jason
 
+  require 'jason/core_ext/string'
+
   extend self
 
   module Encryptors
@@ -34,7 +36,6 @@ module Jason
 
   autoload :Errors,         'jason/errors'
 
-  autoload :CoreExtension,  'jason/core/ext'
   autoload :Relation,       'jason/relation'
   autoload :Persistence,    'jason/persistence' 
    

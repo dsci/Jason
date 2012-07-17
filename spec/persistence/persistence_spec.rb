@@ -6,7 +6,7 @@ class Person
 
   attribute :firstname,     String
   attribute :lastname,      String
-  attribute :date_of_birth, String
+  attribute :date_of_birth, Date
   attribute :age,           Integer
 
 end
@@ -34,21 +34,45 @@ describe "Jason::Persistence" do
       context "when document found" do
 
         let(:person) do
-          Person.new(:lastname => "Hauptmann", :firstname => "Rene", :age => 12)
+          Person.new(:lastname => "Hauptmann", :firstname => "Rene", :age => 12,
+                     :date_of_birth => "2000/09/09")
         end
 
         before do
           person.save
         end
 
+        subject{Person.find(person.id)}
+
         it "returns single object" do
-          expected_person = Person.find(person.id)
-          expected_person.id.should eq person.id
-          expected_person.lastname.should eq person.lastname
-          expected_person.firstname.should eq person.firstname
-          expected_person.date_of_birth.should eq person.date_of_birth
-          expected_person.new_record?.should be false
-          expected_person.age.should be_instance_of Fixnum
+          subject.should be_instance_of Person
+        end
+
+        it "id equals the person id" do
+          subject.id.should eq person.id
+        end
+
+        it "lastname equals person lastname" do
+          subject.lastname.should eq person.lastname
+        end
+
+        it "firstname equals person firstname" do
+          subject.firstname.should eq person.firstname
+        end
+
+        it "date_of_birth is a date and equals person date" do
+          subject.date_of_birth.should be_instance_of Date
+          subject.date_of_birth.day.should eq 9
+          subject.date_of_birth.month.should eq 9
+          subject.date_of_birth.year.should eq 2000
+        end
+
+        it "is not a new record" do
+          subject.new_record?.should be false
+        end
+
+        it "age is a fixnum" do
+          subject.age.should be_instance_of Fixnum
         end
 
       end

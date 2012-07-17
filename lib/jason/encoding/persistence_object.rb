@@ -7,7 +7,7 @@ module Jason
 
         def initialize(obj)
           @persistable_obj  = obj
-          @root             = obj.class.name.downcase.singularize
+          @root             = Jason.singularize_key(obj.class)
         end
       end
       
