@@ -2,7 +2,7 @@
 
 ### Introduction
 
-It's only for demonstration purposes. If you want to used in your application - feel free. 
+It's only for demonstration purposes. If you want to use it in your application - feel free. 
 
 It uses *.json files for persistence. One for each model (imagine as *row*).
 

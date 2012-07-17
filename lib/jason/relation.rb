@@ -72,19 +72,18 @@ module Jason
         method_definition_getter = <<-RUBY
           def #{relation_name}
             relation_obj = self.instance_variable_get("@#{relation_name}")
-            if relation_obj
-              return relation_obj
-            else
+            finder = ->() do 
               klass = Module.const_get("#{class_name}".to_sym)
               relation_obj = klass.find(self.send("#{ivar_name}"))
               self.instance_variable_set("@#{relation_name}", relation_obj)
               return relation_obj
             end
+            relation_obj ||= finder.call
           end
         RUBY
 
-        class_eval method_definition_setter
-        class_eval method_definition_getter, "relation.rb"
+        class_eval method_definition_setter, "relation.rb", 63
+        class_eval method_definition_getter, "relation.rb", 72
       end
 
 
