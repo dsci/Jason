@@ -242,6 +242,10 @@ describe "Jason::Persistence" do
         Person.new(:firstname => "max", :lastname => "Mustermann")
       end
 
+      it "raise UndeletableError if it is a new record" do
+        expect{another_person.delete}.to raise_error Jason::Errors::UndeletableError
+      end
+
       it "returns true if successful" do
         another_person.save
         person = Person.find(another_person.id)

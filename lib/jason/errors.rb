@@ -6,6 +6,8 @@ module Jason
 
     class DocumentNotFoundError < StandardError;end
 
+    class UndeletableError < StandardError; end
+
   end 
 
 end

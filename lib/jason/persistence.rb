@@ -136,6 +136,7 @@ module Jason
       end
 
       def delete
+        raise Jason::Errors::UndeletableError.new "Could not delete an unpersisted object!" if new_record?
         Encoding::PersistenceHandler.delete(self)
       end
 

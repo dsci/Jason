@@ -121,10 +121,10 @@ so different class (names) are assignable to the relation name.
 | Date                            | DONE              |
 | has_many                        | work in progress  |
 | Custom data types               | TODO              |
-| deletable only if already saved | TODO              |
+| deletable only if already saved | DONE              |
 | code documentation              | Partly & TODO     |
 | Gemspec                         | TODO              |
 
 ### Last words
 
-Author: Daniel Schmidt, 15/16. July 2012
+Author: Daniel Schmidt, 15/16/17. July 2012
