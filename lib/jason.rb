@@ -2,6 +2,8 @@
 #require "rubygems"
 #require 'bundler/setup'
 
+# for any Ruby implementation which not support require_relative
+require "require_relative"
 require 'active_support/core_ext/module/qualified_const'
 #require 'active_support/core_ext/string/inflections'
 require 'active_support/inflector'
