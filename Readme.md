@@ -123,7 +123,7 @@ so different class (names) are assignable to the relation name.
 | Custom data types               | TODO              |
 | deletable only if already saved | DONE              |
 | code documentation              | Partly & TODO     |
-| Gemspec                         | TODO              |
+| Gemspec                         | DONE              |
 
 ### Last words
 
