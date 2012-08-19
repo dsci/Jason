@@ -3,8 +3,10 @@ module Jason
   module Relation
 
     def self.included(base)
-      base.send(:include, InstanceMethods)
-      base.send(:extend, ClassMethods)
+      base.class_eval do
+        include InstanceMethods
+        extend  ClassMethods
+      end
     end
 
     module InstanceMethods

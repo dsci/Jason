@@ -5,8 +5,10 @@ module Jason
     extend self
 
     def included(base)
-      base.send(:include, InstanceMethods)
-      base.send(:extend, ClassMethods)
+      base.class_eval do
+        include InstanceMethods
+        extend  ClassMethods
+      end
     end
 
     module ClassMethods
@@ -109,7 +111,7 @@ module Jason
           define_method "id=" do |val|
             instance_variable_set("@id", val)
           end
-          defined_attributes << {:name => :id, :type => attribute_type}
+          defined_attributes << {:name => :id, :type => String}
         end
       end
 
@@ -161,6 +163,7 @@ module Jason
       def new_record?
         @new_record
       end
+      alias_method :persisted?, :new_record?
 
       def reload_attributes
         self.class.defined_attributes.each do |attribute|

@@ -11,6 +11,7 @@ module Jason
           super(obj)
         end
        
+
         def process_persistence
           persisted = true
           begin
