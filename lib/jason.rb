@@ -1,11 +1,6 @@
-require 'bundler/setup'
-
-begin 
-  Bundler.setup
-rescue 
-  raise RuntimeError, "Bundler couldn't find some gems." + 
-    "Did you run 'bundle install'?"
-end
+# For development only
+#require "rubygems"
+#require 'bundler/setup'
 
 require 'active_support/core_ext/module/qualified_const'
 #require 'active_support/core_ext/string/inflections'

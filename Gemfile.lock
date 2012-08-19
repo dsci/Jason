@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    jason (0.1)
+    jason-orm (0.2)
       activesupport
 
 GEM
@@ -36,6 +36,6 @@ PLATFORMS
 DEPENDENCIES
   chronic
   fuubar
-  jason!
+  jason-orm!
   rake
   rspec

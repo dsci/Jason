@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "version"
 
 Gem::Specification.new do |s|
-  s.name        = "jason"
+  s.name        = "jason-orm"
   s.version     = Jason::VERSION
   s.authors     = ["Daniel Schmidt"]
   s.email       = ["dsci@code79.net"]
