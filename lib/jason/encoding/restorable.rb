@@ -66,8 +66,8 @@ module Jason
                 attribute_definition = self.class.defined_attributes.detect do |item| 
                   item[:name] == key.to_sym
                 end[:type]
-
-                cast_to = Jason::DATA_TYPES["#{attribute_definition.to_sym}"]
+                cast_type = "#{attribute_definition}".to_sym
+                cast_to = Jason::DATA_TYPES[cast_type]
                 instance_variable_set("@#{key}",value.send(cast_to))
               rescue 
                 next
