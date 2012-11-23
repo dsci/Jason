@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = Jason::VERSION
   s.authors     = ["Daniel Schmidt"]
   s.email       = ["dsci@code79.net"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/dsci/Jason"
   s.summary     = %q{JSON persistence framework}
   s.description = %q{A persistence framework based on json files.}
 
