@@ -1,4 +1,4 @@
-## Jason (Json Persistence Framework)
+## Jason (Json Persistence Framework) [![](http://stillmaintained.com/dsci/Jason.png)](http://stillmaintained.com/dsci/Jason)
 
 ### Introduction
 
